@@ -1,0 +1,121 @@
+:root {
+    --blueColor: #3958C6;
+    --greenColor: #58C639;
+    --yellowColor: #e6c56b;
+    --blackColor: black;
+    --shadow: .2rem .2rem grey;
+    --fontTitle: Verdana, Geneva, Tahoma, sans-serif;
+    --fontAlt: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    width: 100%;
+}
+
+h1 {
+    color: white;
+    font-family: var(--fontTitle);
+    text-shadow: var(--shadow);
+}
+
+h2 {
+    color: var(--yellowColor);
+    font-family: var(--fontTitle);
+    text-shadow: var(--shadow);
+}
+
+p1 {
+    color: white;
+    font-size: 200%;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: var(--blueColor);
+}
+
+.questions {
+    height: auto;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    margin: 0% 20%;
+    min-height: 300px;
+}
+
+#question-head {
+    color: black;
+    text-align: center;
+    font-size: 200%;
+    padding: 3%;
+    margin: 0;
+    text-shadow: none;
+}
+
+.answer-btns {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 10%;
+    padding-bottom: 5%;
+}
+
+.answer-btn {
+    margin: 5%;
+    width: 20rem;
+    height: 5rem;
+    border-radius: 20px;
+    text-align: left;
+}
+
+.answer-btn p2 {
+    margin: 5%;
+    font-size: 150%;
+}
+
+.start-btn {
+    font-size: 200%;
+}
+
+.score-btn {
+    border: none;
+    background-color: var(--blueColor);
+    color: white;
+    font-family: var(--fontTitle);
+    font-size: 200%;
+    text-shadow: 2px 2px grey;
+}
+
+.score-btn:hover {
+    transition-duration: 1s;
+    color: var(--yellowColor);
+}
+
+.bottom-section {
+    background-color: var(--blueColor);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 15%;
+    font-family: var(--fontTitle);
+}
+
+.bottom-section p1 {
+    padding: 1%;
+    color: var(--yellowColor);
+}
+
+#timer span {
+    font-style: italic;
+}
