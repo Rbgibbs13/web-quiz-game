@@ -64,7 +64,7 @@ let questionSeven = {
 }
 
 let questionEight = {
-    question: "What keyphrase do you use in javascript to declare a variable",
+    question: "What keyphrase do you use in javascript to declare a variable?",
     answers: ["let", "var", "const", "All Of The Above"],
     correct: 3,
 }
@@ -280,9 +280,9 @@ const SaveScore = (x, y) => {
     if(x == "" || x == null) { x = "AAA"; }
     var checkHigher = localStorage.getItem(x);
     //check for and get saved score
+    y.remove();
     if(checkHigher > scoreTracker)  { return; }
     localStorage.setItem(x, scoreTracker);
-    y.remove();
 }
 
 const ShowHighScores = () => {
@@ -307,13 +307,14 @@ const ShowHighScores = () => {
         scoreVal.text(localStorage.key(i) + " : " + storedVal);
         aScore.append(scoreVal);
 
-        //very simple sory could definitely do a more sophisticated one
+        //very simple sort could definitely do a more sophisticated one
         if(storedVal > previousValue) {
             addDiv.prepend(aScore);
         } else {
             addDiv.append(aScore);
         }
 
+        console.log("Previous: " + previousValue + " Stored: " + storedVal);
         previousValue = storedVal;
         maxScores--;
     }
