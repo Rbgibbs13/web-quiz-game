@@ -17,23 +17,21 @@ html, body {
 
 header {
     width: 100%;
+    border-bottom: .5rem solid #e6c56b;
 }
 
-.high-score-table {
-    min-height: 100px;
-    background-color: var(--blueColor);
+.close-button {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--yellowColor);
+    font-style: bold;
     border-style: solid;
-    box-shadow: var(--box-shadow);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
 }
 
-.high-score-table h2 {
-    width: 50%;
-    margin: 0;
-    padding-left: 5%;
+.close-button:hover {
+    background-color: red;
+    transition-duration: 1s;
 }
 
 h1 {
@@ -47,7 +45,6 @@ h2 {
     font-family: var(--fontTitle);
     font-size: 250%;
     text-shadow: var(--shadow);
-    justify-content: ;
 }
 
 p1 {
@@ -92,14 +89,16 @@ p1 {
 }
 
 .answer-btn {
+    background-color: var(--blueColor);
+    border-radius: 20px;
     margin: 5%;
     width: 20rem;
     height: 5rem;
-    border-radius: 20px;
     text-align: left;
 }
 
 .answer-btn p2 {
+    color: white;
     margin: 5%;
     font-size: 150%;
 }
@@ -108,7 +107,7 @@ p1 {
     font-size: 200%;
 }
 
-.score-btn {
+.head-btn {
     border: none;
     background-color: var(--blueColor);
     color: white;
@@ -117,9 +116,53 @@ p1 {
     text-shadow: 2px 2px grey;
 }
 
-.score-btn:hover {
+.head-btn:hover {
     transition-duration: 1s;
     color: var(--yellowColor);
+}
+
+.save-score-form {
+    background-color: var(--blueColor);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 10rem;
+    border: 1rem solid var(--yellowColor);
+}
+
+.save-score-form label {
+    color: white;
+    min-height: 2.5rem;
+    font-size: 2.5rem;
+    font-family: var(--fontTitle);
+}
+
+.save-score-form input {
+    min-height: 2.5rem;
+    font-size: 2rem;
+}
+
+.high-score-table {
+    min-height: 100px;
+    width: auto;
+    background-color: var(--blueColor);
+    border-style: solid;
+    box-shadow: var(--box-shadow);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.high-score-table h2 {
+    margin: 2% 0%;
+    text-align: center;
+    width: 100%;
+}
+
+.head-score-title {
+    text-align: center;
+    border-bottom: .2rem solid var(--yellowColor);
 }
 
 .bottom-section {
@@ -129,11 +172,12 @@ p1 {
     align-items: center;
     height: 15%;
     font-family: var(--fontTitle);
+    border-top: .5rem solid #e6c56b;
+    border-bottom: .5rem solid #e6c56b;
 }
 
 .bottom-section p1 {
     padding: 1%;
-    color: var(--yellowColor);
 }
 
 #timer span {

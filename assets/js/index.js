@@ -17,7 +17,9 @@ var perQuestionTime = 10;
 var scoreTracker = 0;
 
 var gameState = false;
+var scoresOpen = false;
 var gameOverEl;
+var saveScoreForm;
 
 let questionOne = {
     question: "What does DOM stand for?",
@@ -93,12 +95,13 @@ let questionHolder = {
 }
 
 var componentObject = questionHolder.qOne;
+var qHolderValues = Object.values(questionHolder);
 var keysLength = Object.keys(questionHolder).length;
 
 const TimerFunction = () => {
     timerInterval = setInterval(function() {
         currentTIme--;
-        AdjustTime(0);
+        AdjustTime();
         if(currentTIme < 1)    {
             GameOver();
             return;
@@ -107,27 +110,22 @@ const TimerFunction = () => {
 }
 
 const StartGame = () => {
-    if(gameState)   {
-        console.log("GAME RUNNING!");
-        return;
-    }
+    if(gameState)   { return; }
 
-    if(gameOverEl)  {
-        gameOverEl.remove();
-    }
+    if(gameOverEl)  { gameOverEl.remove(); }
+
+    if(saveScoreForm) { saveScoreForm.remove(); }
 
     gameState = true;
     scoreTracker = 0;
     questionEl.show();
     startButtonEl.hide();
 
-    if(timerInterval)   {
-        clearInterval(timerInterval);
-    }
+    if(timerInterval)   { clearInterval(timerInterval); }
 
     console.log(questionHolder.qOne.question);
     currentTIme = startTime;
-    AdjustTime(0);
+    AdjustTime();
 
     PopulateNextQuestion();
 
@@ -135,11 +133,7 @@ const StartGame = () => {
     wrongrightEl.text("");
 }
 
-const AdjustTime = (x) => {
-    if(x > 0) {
-        currentTIme += x;
-    }
-
+const AdjustTime = () => {
     if(currentTIme < 10 && currentTIme > 0)    {
         timerEl.text("0" + currentTIme);
     } else if(currentTIme < 0)  {
@@ -148,7 +142,6 @@ const AdjustTime = (x) => {
     } else {
         timerEl.text(currentTIme);
     }
-    
 }
 
 const PopulateNextQuestion = () => {
@@ -156,7 +149,9 @@ const PopulateNextQuestion = () => {
     var roll = Math.floor(Math.random() * keysLength);
     perQuestionTime = 10;
 
-    if(roll == 1)   {
+    componentObject = qHolderValues[roll];
+
+    /*if(roll == 1)   {
         componentObject = questionHolder.qTwo;
     } else if(roll == 2) {
         componentObject = questionHolder.qThree;
@@ -176,7 +171,7 @@ const PopulateNextQuestion = () => {
         componentObject = questionHolder.qTen;
     } else {
         componentObject = questionHolder.qOne;
-    }
+    }*/
 
     console.log("Populating: " + roll + "  :  " + componentObject);
     questionEl.text(componentObject.question);
@@ -219,12 +214,12 @@ const CheckAnswer = (x) => {
         //Win condition
         wrongrightEl.text("Right!");
         CalculateScore(perQuestionTime);
-        AdjustTime(5);
+        AdjustTime();
     } else {
         //Lose condition
         wrongrightEl.text("Wrong!");
         currentTIme -= perQuestionTime;
-        AdjustTime(0);
+        AdjustTime();
     }
     
     clearInterval(questionInterval);
@@ -259,7 +254,7 @@ const CalculateScore = (x) => {
 const GameOver = () => {
     clearInterval(timerInterval);
     clearInterval(questionInterval);
-    AdjustTime(0);
+    AdjustTime();
 
     gameOverEl = $("<h2>");
     gameOverEl.text("GAME OVER!");
@@ -272,10 +267,15 @@ const GameOver = () => {
     }
 
     //Save Score Here
-    var saveScoreForm = $("<form>")
+    saveScoreForm = $("<form>")
     var initialInput = $("<input>");
     var initialLabel = $("<label>");
     var saveScore = $("<button>");
+
+    saveScore.addClass("head-btn");
+    saveScoreForm.addClass("save-score-form");
+    initialInput.attr("id", "initial-input");
+    initialLabel.attr("for", "initial-input");
 
     saveScoreForm.prepend(initialLabel);
     saveScoreForm.append(initialInput);
@@ -306,31 +306,61 @@ const GameOver = () => {
 }
 
 const SaveScore = (x, y) => {
+    if(x == "" || x == null) {x = "AAA";}
     localStorage.setItem(x, scoreTracker);
     y.remove();
 }
 
 const ShowHighScores = () => {
-    if(gameState)   {
-        return;
-    }
+    if(gameState || scoresOpen)   {return;}
+
+    scoresOpen = true;
+    var maxScores = 10;
+    var previousValue = 0;
 
     var addDiv = $("<div>");
     addDiv.addClass("high-score-table");
 
     for(let i = 0; i < localStorage.length; i++) {
+        if(maxScores <= 0) { continue; }
+
         var aScore = $("<div>");
-        var scoreInits = $("<h2>");
         var scoreVal = $("<h2>");
+        var storedVal = localStorage.getItem(localStorage.key(i));
 
-        scoreInits.text(localStorage.key(i) + " : ");
-        scoreVal.text(localStorage.getItem(localStorage.key(i)));
-
-        aScore.append(scoreInits);
+        aScore.css("width", "100%");
+        scoreVal.addClass("high-score-values");
+        scoreVal.text(localStorage.key(i) + " : " + storedVal);
         aScore.append(scoreVal);
-        addDiv.append(aScore);
+
+        //very simple sory could definitely do a more sophisticated one
+        if(storedVal > previousValue) {
+            addDiv.prepend(aScore);
+        } else {
+            addDiv.append(aScore);
+        }
+
+        previousValue = storedVal;
+        maxScores--;
     }
 
+    var title = $("<h2>");
+    title.addClass("head-score-title");
+    title.text("High Scores");
+    title.css("text-align, border-bottom", "center, 1 rem solid var(--yellowColor");
+    addDiv.prepend(title);
+
+    var closeButton = $("<button>");
+    closeButton.addClass("close-button");
+    closeButton.text("X");
+
+    closeButton.on("click", function() {
+        scoresOpen = false;
+        addDiv.remove();
+        this.remove();
+    });
+
+    containerEl.append(closeButton);
     containerEl.append(addDiv);
 }
 
