@@ -9,18 +9,20 @@ var scoreButtonEl = $(".score-btn");
 var startButtonEl = $(".start-btn");
 
 let timerInterval;
+let questionInterval;
 
-var startTime = 15;
+var startTime = 60;
 var currentTIme = 0;
 var perQuestionTime = 10;
 var scoreTracker = 0;
 
 var gameState = false;
+var gameOverEl;
 
 let questionOne = {
     question: "What does DOM stand for?",
     answers: ["Direct Open Market", "Data Oriented Model", "Document Object Model", "Document Order Mode"],
-    correct: "Document Object Model",
+    correct: 2,
 }
 
 let questionTwo = {
@@ -90,19 +92,17 @@ let questionHolder = {
     qTen: questionTen,
 }
 
+var componentObject = questionHolder.qOne;
 var keysLength = Object.keys(questionHolder).length;
-
-var answerBtns = document.getElementsByClassName("answer-btn");
 
 const TimerFunction = () => {
     timerInterval = setInterval(function() {
-        if(currentTIme <= 0)    {
+        currentTIme--;
+        AdjustTime(0);
+        if(currentTIme < 1)    {
             GameOver();
             return;
         }
-
-        currentTIme--;
-        AdjustTime(0);
     }, 1000);
 }
 
@@ -111,6 +111,15 @@ const StartGame = () => {
         console.log("GAME RUNNING!");
         return;
     }
+
+    if(gameOverEl)  {
+        gameOverEl.remove();
+    }
+
+    gameState = true;
+    scoreTracker = 0;
+    questionEl.show();
+    startButtonEl.hide();
 
     if(timerInterval)   {
         clearInterval(timerInterval);
@@ -131,13 +140,21 @@ const AdjustTime = (x) => {
         currentTIme += x;
     }
 
-    timerEl.text(currentTIme);
+    if(currentTIme < 10 && currentTIme > 0)    {
+        timerEl.text("0" + currentTIme);
+    } else if(currentTIme < 0)  {
+        timerEl.text("0");
+        //GameOver();
+    } else {
+        timerEl.text(currentTIme);
+    }
+    
 }
 
 const PopulateNextQuestion = () => {
     //roll to select question
     var roll = Math.floor(Math.random() * keysLength);
-    var componentObject = questionHolder.qOne;
+    perQuestionTime = 10;
 
     if(roll == 1)   {
         componentObject = questionHolder.qTwo;
@@ -161,52 +178,169 @@ const PopulateNextQuestion = () => {
         componentObject = questionHolder.qOne;
     }
 
-    console.log(roll + "  :  " + componentObject);
+    console.log("Populating: " + roll + "  :  " + componentObject);
     questionEl.text(componentObject.question);
 
-    for(let i = 0; i < answerBtns.length; i++) {
-        $(answerBtns[i]).children('p2').text((i + 1) + " : " + componentObject.answers[i]); 
-        //$(answerBtns[i]).children('p2').text((i + 1) + " : " + questionOne.answers[i]);
+    for(let j = 0; j < 4; j++) {
+        var aButton = $("<button>");
+        var textTag = $("<p2>");
+        
+        textTag.text((j + 1) + " : " + componentObject.answers[j]);
+        aButton.addClass("answer-btn");
+        aButton.on('click', function() {
+            var dex = j;
+            CheckAnswer(j);
+        });
+
+        aButton.append(textTag);
+        answerButtonParentEl.append(aButton);
     }
+
+    var questionTimer = $("<h2>");
+    questionTimer.addClass("question-timer");
+    questionTimer.text(perQuestionTime);
+    questionTimer.css("text-align", "center");
+    containerEl.append(questionTimer);
+
+    questionInterval = setInterval(function() {
+        perQuestionTime--;
+        questionTimer.text(perQuestionTime);
+        if(perQuestionTime < 1) {
+            TimeOutQuestion();
+            return;
+        }
+    }, 1000);
 }
 
 const CheckAnswer = (x) => {
+    console.log(x);
+
     if(x == componentObject.correct) {
         //Win condition
         wrongrightEl.text("Right!");
+        CalculateScore(perQuestionTime);
+        AdjustTime(5);
     } else {
         //Lose condition
         wrongrightEl.text("Wrong!");
+        currentTIme -= perQuestionTime;
+        AdjustTime(0);
     }
+    
+    clearInterval(questionInterval);
+    perQuestionTime = 10;
+
+    CleanElements();
+}
+
+const CleanElements = () => {
+    var buttonContainerLength = answerButtonParentEl.children().length;
+    containerEl.children('h2').remove();
+
+    for(let i = 0; i < buttonContainerLength; i++) {
+        answerButtonParentEl.children(0).remove();
+    }
+    
+    PopulateNextQuestion();
+}
+
+const TimeOutQuestion = () => {
+    clearInterval(questionInterval);
+    wrongrightEl.text("Time Out!");
+    CleanElements();
 }
 
 const CalculateScore = (x) => {
+    clearInterval(questionInterval);
     scoreTracker += 10 + perQuestionTime;
+    scoreEl.text("Score: " + scoreTracker);
 }
 
 const GameOver = () => {
     clearInterval(timerInterval);
+    clearInterval(questionInterval);
+    AdjustTime(0);
 
-    var gameOverEl = $("<h2>");
+    gameOverEl = $("<h2>");
     gameOverEl.text("GAME OVER!");
     gameOverEl.css("text-align", "center");
 
-    console.log(answerBtns.length);
-    var holdLength = answerBtns.length;
+    var buttonContainerLength = answerButtonParentEl.children().length;
 
-    for(let i = 0; i < holdLength; i++)  {
-        answerBtns[0].remove();
+    for(let i = 0; i < buttonContainerLength; i++)  {
+        answerButtonParentEl.children(0).remove();
     }
 
     //Save Score Here
+    var saveScoreForm = $("<form>")
+    var initialInput = $("<input>");
+    var initialLabel = $("<label>");
+    var saveScore = $("<button>");
+
+    saveScoreForm.prepend(initialLabel);
+    saveScoreForm.append(initialInput);
+    saveScoreForm.append(saveScore);
+    initialInput.attr("placeholder", "GBG");
+    initialInput.attr("maxLength", "3");
+
+    saveScore.text("Save Score");
+    initialLabel.text("Initials: ");
+
+    saveScore.css("justify-content", "baseline");
+    initialLabel.css("font-family", "Verdana, Geneva, Tahoma, sans-serif");
+    initialInput.css("font-family", "Verdana, Geneva, Tahoma, sans-serif");
+
+    //saveScore.on('click', SaveScore(event, initialInput.val()));
+    saveScore.on('click', function(event) {
+        event.preventDefault();
+        console.log(initialInput.val());
+        SaveScore(initialInput.val(), saveScoreForm);
+    });
+    containerEl.append(saveScoreForm);
+
     questionEl.hide();
-    containerEl.append(gameOverEl);
-    scoreTracker = 0;
+    startButtonEl.show();
+    containerEl.children('h2').remove();
+    containerEl.prepend(gameOverEl);
+    gameState = false;
+}
+
+const SaveScore = (x, y) => {
+    localStorage.setItem(x, scoreTracker);
+    y.remove();
+}
+
+const ShowHighScores = () => {
+    if(gameState)   {
+        return;
+    }
+
+    var addDiv = $("<div>");
+    addDiv.addClass("high-score-table");
+
+    for(let i = 0; i < localStorage.length; i++) {
+        var aScore = $("<div>");
+        var scoreInits = $("<h2>");
+        var scoreVal = $("<h2>");
+
+        scoreInits.text(localStorage.key(i) + " : ");
+        scoreVal.text(localStorage.getItem(localStorage.key(i)));
+
+        aScore.append(scoreInits);
+        aScore.append(scoreVal);
+        addDiv.append(aScore);
+    }
+
+    containerEl.append(addDiv);
 }
 
 startButtonEl.on('click', StartGame);
+scoreButtonEl.on('click', ShowHighScores);
 
 
+//per question interval
 //need to set up dynamically adding and removing buttons
 //need to compare answer to correct for wrong/right and scoring
 //need to add score
+
+//need save score system
