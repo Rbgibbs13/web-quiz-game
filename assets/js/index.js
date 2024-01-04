@@ -28,56 +28,56 @@ let questionOne = {
 }
 
 let questionTwo = {
-    question: "How old are you?",
-    answers: ["0 - 10", "10 - 20", "20 - 30", "30+"],
-    correct: 0,
+    question: "Which of the following is a valid way to transform an element?",
+    answers: ["Rotate", "Skew", "Scale", "All Of The Above"],
+    correct: 3,
 }
 
 let questionThree = {
-    question: "Three",
-    answers: ["", "", "", ""],
-    correct: 0,
+    question: "How would you target the root of an HTML file to declare variables?",
+    answers: ["   .root", "   root", "   :root", "   <root>"],
+    correct: 2,
 }
 
 let questionFour = {
-    question: "Four",
-    answers: ["", "", "", ""],
+    question: "What keyphrase do you use in the console window in order to generate a new file?",
+    answers: ["touch", "file", "new", "html"],
     correct: 0,
 }
 
 let questionFive = {
-    question: "Five",
-    answers: ["", "", "", ""],
-    correct: 0,
+    question: "What function stops a form from refreshing the page?",
+    answers: ["stopPropagation()", "preventDefault()", "cancelRefresh()", "end()"],
+    correct: 1,
 }
 
 let questionSix = {
-    question: "Six",
-    answers: ["", "", "", ""],
-    correct: 0,
+    question: "How do you access items stored in local storage?",
+    answers: ["storage.get(key)", "localStorage(key)", "localStorage.getItem(key)", "localStorage.key(value)"],
+    correct: 2,
 }
 
 let questionSeven = {
-    question: "Seven",
-    answers: ["", "", "", ""],
-    correct: 0,
+    question: "Which keyphrase would you use to check to see when a user presses DOWN?",
+    answers: ["keyDown", "keydown", "keyUp", "All Of The Above"],
+    correct: 1,
 }
 
 let questionEight = {
-    question: "Eight",
-    answers: ["", "", "", ""],
-    correct: 0,
+    question: "What keyphrase do you use in javascript to declare a variable",
+    answers: ["let", "var", "const", "All Of The Above"],
+    correct: 3,
 }
 
 let questionNine = {
-    question: "Nine",
-    answers: ["", "", "", ""],
-    correct: 0,
+    question: "Whick keyphrase would you use to check when the mouse passes over an element?",
+    answers: ["mouseMove", "mousedown", "mousethrough", "mouseover"],
+    correct: 3,
 }
 
 let questionTen = {
-    question: "Ten",
-    answers: ["", "", "", ""],
+    question: "What notation would you use to get a child from a list?",
+    answers: ["[]", "()", "{}", "<>"],
     correct: 0,
 }
 
@@ -122,8 +122,6 @@ const StartGame = () => {
     startButtonEl.hide();
 
     if(timerInterval)   { clearInterval(timerInterval); }
-
-    console.log(questionHolder.qOne.question);
     currentTIme = startTime;
     AdjustTime();
 
@@ -150,30 +148,6 @@ const PopulateNextQuestion = () => {
     perQuestionTime = 10;
 
     componentObject = qHolderValues[roll];
-
-    /*if(roll == 1)   {
-        componentObject = questionHolder.qTwo;
-    } else if(roll == 2) {
-        componentObject = questionHolder.qThree;
-    } else if(roll == 3) {
-        componentObject = questionHolder.qFour;
-    } else if(roll == 4) {
-        componentObject = questionHolder.qFive;
-    } else if(roll == 5) {
-        componentObject = questionHolder.qSix;
-    } else if(roll == 6) {
-        componentObject = questionHolder.qSeven;
-    } else if(roll == 7) {
-        componentObject = questionHolder.qEight;
-    } else if(roll == 8) {
-        componentObject = questionHolder.qNine;
-    } else if(roll == 9) {
-        componentObject = questionHolder.qTen;
-    } else {
-        componentObject = questionHolder.qOne;
-    }*/
-
-    console.log("Populating: " + roll + "  :  " + componentObject);
     questionEl.text(componentObject.question);
 
     for(let j = 0; j < 4; j++) {
@@ -208,8 +182,6 @@ const PopulateNextQuestion = () => {
 }
 
 const CheckAnswer = (x) => {
-    console.log(x);
-
     if(x == componentObject.correct) {
         //Win condition
         wrongrightEl.text("Right!");
@@ -290,14 +262,12 @@ const GameOver = () => {
     initialLabel.css("font-family", "Verdana, Geneva, Tahoma, sans-serif");
     initialInput.css("font-family", "Verdana, Geneva, Tahoma, sans-serif");
 
-    //saveScore.on('click', SaveScore(event, initialInput.val()));
     saveScore.on('click', function(event) {
         event.preventDefault();
-        console.log(initialInput.val());
         SaveScore(initialInput.val(), saveScoreForm);
     });
-    containerEl.append(saveScoreForm);
 
+    containerEl.append(saveScoreForm);
     questionEl.hide();
     startButtonEl.show();
     containerEl.children('h2').remove();
@@ -306,7 +276,11 @@ const GameOver = () => {
 }
 
 const SaveScore = (x, y) => {
-    if(x == "" || x == null) {x = "AAA";}
+    //set default save to AAA
+    if(x == "" || x == null) { x = "AAA"; }
+    var checkHigher = localStorage.getItem(x);
+    //check for and get saved score
+    if(checkHigher > scoreTracker)  { return; }
     localStorage.setItem(x, scoreTracker);
     y.remove();
 }
@@ -366,11 +340,3 @@ const ShowHighScores = () => {
 
 startButtonEl.on('click', StartGame);
 scoreButtonEl.on('click', ShowHighScores);
-
-
-//per question interval
-//need to set up dynamically adding and removing buttons
-//need to compare answer to correct for wrong/right and scoring
-//need to add score
-
-//need save score system

@@ -66,6 +66,10 @@ p1 {
     padding: 0;
 }
 
+.question-timer {
+    color: black;
+}
+
 .container {
     margin: 0% 20%;
     min-height: 40rem;
@@ -125,9 +129,10 @@ p1 {
     background-color: var(--blueColor);
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     justify-content: space-around;
     height: 10rem;
-    border: 1rem solid var(--yellowColor);
+    border: .2rem solid var(--yellowColor);
 }
 
 .save-score-form label {
@@ -140,18 +145,19 @@ p1 {
 .save-score-form input {
     min-height: 2.5rem;
     font-size: 2rem;
+    max-width: 20rem;
 }
 
 .high-score-table {
-    min-height: 100px;
-    width: auto;
     background-color: var(--blueColor);
-    border-style: solid;
+    border: .2rem solid var(--yellowColor);
     box-shadow: var(--box-shadow);
+    min-height: 100px;
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: space-between;
+    width: auto;
 }
 
 .high-score-table h2 {
